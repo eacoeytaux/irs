@@ -12,17 +12,16 @@ participant Company identified by name {
 
 /** Assets **/
 
-abstract asset InterestRate identified by id {
-  o String id                       //id of variable interest
+abstract concept InterestRate {
   o String name optional            //name of variable interest
   o String description optional     //how variable interest rate is determined
 }
 
-asset FixedRate extends InterestRate {
+concept FixedRate extends InterestRate {
   o Double rate range = [0.0, 1.0]	//what the interest rate is set to
 }
 
-asset LIBORIndex extends InterestRate {
+concept LIBORIndex extends InterestRate {
   o String apikey                   //api key used to retrieve data from quandl
 }
 
@@ -43,19 +42,19 @@ asset InterestRateSwap identified by id {
   o PaymentFrequency frequency                    //how often payments are made
 
   --> Company participant1                        //company who receives payment from variable interest rate 1
-  --> InterestRate interestRate1                  //interest rate participant1 pays
+  o InterestRate interestRate1                  //interest rate participant1 pays
   o Boolean participant1Approved default = false  //whether or not participant1 has 
 
   --> Company participant2                        //company who receives payment from variable interest rate 2
-  --> InterestRate interestRate2                  //interest rate participant1 pays
+  o InterestRate interestRate2                  //interest rate participant1 pays
   o Boolean participant2Approved default = false  //whether or not participant2 has approved IRS
 
   o Boolean completed default = false             //whether or not IRS has been completed on both sides
 
   o DateTime[] paymentDates
   o Boolean[] paymentCompleted
-  o Double[] interestRate1Value
-  o Double[] interestRate2Value
+  o Double[] interestRate1Values
+  o Double[] interestRate2Values
 }
 
 /** Transactions **/
@@ -65,10 +64,11 @@ transaction ProposeInterestRateSwap {
   o DateTime startDate
   o DateTime endDate
   o PaymentFrequency frequency
+  
   --> Company participant1
-  --> InterestRate interestRate1
+  o InterestRate interestRate1
   --> Company participant2
-  --> InterestRate interestRate2
+  o InterestRate interestRate2
 }
 
 transaction ApproveInterestRateSwap {
