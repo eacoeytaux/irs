@@ -10,7 +10,11 @@ participant Company identified by name {
   o Double balance  //how much money the company curren
 }
 
-/** Assets **/
+participant LIBORAuthority identified by name {
+  o String name     //name of authority
+}
+
+/** Concepts **/
 
 abstract concept InterestRate {
   o String name optional            //name of variable interest
@@ -22,7 +26,21 @@ concept FixedRate extends InterestRate {
 }
 
 concept LIBORIndex extends InterestRate {
-  o String apikey                   //api key used to retrieve data from quandl
+
+}
+
+concept Payment {
+  o DateTime date       //date at which payment can occur
+  o Boolean completed   //whether or not the payment has already happened
+  o Double rate1        //the rate participant1 pays participant2
+  o Double rate2        //the rate participant2 pays participant1
+}
+
+/** Assets **/
+
+asset LIBORIndexValue identified by date {
+  o String date   //date of LIBOR index
+  o Double rate   //rate of LIBOR index at given date
 }
 
 enum PaymentFrequency {
@@ -42,19 +60,16 @@ asset InterestRateSwap identified by id {
   o PaymentFrequency frequency                    //how often payments are made
 
   --> Company participant1                        //company who receives payment from variable interest rate 1
-  o InterestRate interestRate1                  //interest rate participant1 pays
+  o InterestRate interestRate1                    //interest rate participant1 pays
   o Boolean participant1Approved default = false  //whether or not participant1 has 
 
   --> Company participant2                        //company who receives payment from variable interest rate 2
-  o InterestRate interestRate2                  //interest rate participant1 pays
+  o InterestRate interestRate2                    //interest rate participant1 pays
   o Boolean participant2Approved default = false  //whether or not participant2 has approved IRS
 
   o Boolean completed default = false             //whether or not IRS has been completed on both sides
 
-  o DateTime[] paymentDates
-  o Boolean[] paymentCompleted
-  o Double[] interestRate1Values
-  o Double[] interestRate2Values
+  o Payment[] payments
 }
 
 /** Transactions **/
@@ -79,14 +94,7 @@ transaction SettleInterestRateSwap {
   --> InterestRateSwap irs
 }
 
-transaction CreateFixedRate {
-  o String name optional
-  o String description optional
+transaction PostLIBORIndex {
+  o DateTime date
   o Double rate
-}
-
-transaction CreateLIBORIndex {
-  o String name optional
-  o String description optional
-  o String apikey default = "HHTdkS25_iyo8UfDnKvv"
 }

@@ -1,5 +1,5 @@
 /**
- * Access control rules for supplychain
+ * Access control rules for IRS
  */
 rule Default {
     description: "Allow all participants access to all resources"
