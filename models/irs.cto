@@ -14,6 +14,18 @@ participant LIBORAuthority identified by name {
   o String name     //name of authority
 }
 
+/** Enums **/
+
+enum Tenor {
+  o DAILY
+  o WEEKLY
+  o ONE_MONTH
+  o TWO_MONTH
+  o THREE_MONTH
+  o SEMI_ANNUALLY
+  o ANNUALLY
+}
+
 /** Concepts **/
 
 abstract concept InterestRate {
@@ -26,75 +38,84 @@ concept FixedRate extends InterestRate {
 }
 
 concept LIBORIndex extends InterestRate {
-
+  o Tenor tenor
 }
 
 concept Payment {
-  o DateTime date       //date at which payment can occur
-  o Boolean completed   //whether or not the payment has already happened
-  o Double rate1        //the rate participant1 pays participant2
-  o Double rate2        //the rate participant2 pays participant1
+  o DateTime effectiveDate        //date at which payment can occur
+  o Boolean completed             //whether or not the payment has already happened
+  o Double rate1 range = [0.0,]   //the rate participant1 pays participant2
+  o Double rate2 range = [0.0,]   //the rate participant2 pays participant1
 }
 
 /** Assets **/
 
-asset LIBORIndexValue identified by date {
-  o String date   //date of LIBOR index
-  o Double rate   //rate of LIBOR index at given date
-}
+abstract asset VariableIndexValue { }
 
-enum PaymentFrequency {
-  o DAILY
-  o WEEKLY
-  o MONTHLY
-  o QUARTERLY
-  o ANNUAL
+asset LIBORIndexValue identified by id extends VariableIndexValue  {
+  o String id
+  o DateTime date               //date of LIBOR index
+  o Tenor tenor                 //maturity of LIBOR index
+  o Double rate range = [0.0,]  //rate of LIBOR index at given date
 }
 
 asset InterestRateSwap identified by id {
   o String id                                     //id of interest rate swap
 
-  o Double value                                  //the amount of money being swapped
-  o DateTime startDate               	            //the start date of the IRS
-  o DateTime endDate	               	            //the date at which payment the IRS expires
-  o PaymentFrequency frequency                    //how often payments are made
+  o Double value range = [0.0,]                   //the amount of money being swapped
+  o DateTime effectiveDate               	        //the start date of the IRS
+  o DateTime maturityDate	               	        //the date at which payment the IRS expires
+  o Tenor tenor                                   //how often payments are made
+
+  o Double marketValue range = [0.0,] optional    //how much it costs a participant to unwind the IRS
 
   --> Company participant1                        //company who receives payment from variable interest rate 1
   o InterestRate interestRate1                    //interest rate participant1 pays
   o Boolean participant1Approved default = false  //whether or not participant1 has 
+  o Double collateral1 range = [0.0,] optional     //how much participant1 must put aside to assure payment to participant2
 
   --> Company participant2                        //company who receives payment from variable interest rate 2
   o InterestRate interestRate2                    //interest rate participant1 pays
   o Boolean participant2Approved default = false  //whether or not participant2 has approved IRS
-
-  o Boolean completed default = false             //whether or not IRS has been completed on both sides
+  o Double collateral2 range = [0.0,] optional    //how much participant2 must put aside to assure payment to participant1
 
   o Payment[] payments
+
+  o String documentHash optional                  //hash of corresponding legal document
 }
 
 /** Transactions **/
 
 transaction ProposeInterestRateSwap {
   o Double value
-  o DateTime startDate
-  o DateTime endDate
-  o PaymentFrequency frequency
+  o DateTime effectiveDate
+  o DateTime maturityDate
+  o Tenor tenor
+
+  o Double marketValue default = 0.0 optional
   
   --> Company participant1
   o InterestRate interestRate1
+  o Double collateral1 range = [0.0,] optional
   --> Company participant2
   o InterestRate interestRate2
+  o Double collateral2 range = [0.0,] optional
+
+  o String documentHash optional
 }
 
 transaction ApproveInterestRateSwap {
   --> InterestRateSwap irs
 }
 
-transaction SettleInterestRateSwap {
+transaction SettleInterestRateSwapPayment {
   --> InterestRateSwap irs
+  o Integer paymentIndex
+  --> VariableIndexValue[] variableRates
 }
 
 transaction PostLIBORIndex {
   o DateTime date
+  o Tenor tenor
   o Double rate
 }
