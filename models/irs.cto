@@ -1,7 +1,7 @@
 /**
- * Supply chain network example
+ * Interest rate swap example
  */
-namespace ibm.irs
+namespace fabric.hyperledger
 
 /** Participants **/
 
@@ -34,7 +34,7 @@ abstract concept InterestRate {
 }
 
 concept FixedRate extends InterestRate {
-  o Double rate range = [0.0, 1.0]	//what the interest rate is set to
+  o Double rate range = [0.0,]	//what the interest rate is set to
 }
 
 concept LIBORIndex extends InterestRate {
@@ -42,6 +42,7 @@ concept LIBORIndex extends InterestRate {
 }
 
 concept Payment {
+  o Integer index                 //which number payment of the IRS this payment is
   o DateTime effectiveDate        //date at which payment can occur
   o Boolean completed             //whether or not the payment has already happened
   o Double rate1 range = [0.0,]   //the rate participant1 pays participant2
@@ -70,12 +71,12 @@ asset InterestRateSwap identified by id {
   o Double marketValue range = [0.0,] optional    //how much it costs a participant to unwind the IRS
 
   --> Company participant1                        //company who receives payment from variable interest rate 1
-  o InterestRate interestRate1                    //interest rate participant1 pays
+  o String interestRate1                          //interest rate participant1 pays
   o Boolean participant1Approved default = false  //whether or not participant1 has 
   o Double collateral1 range = [0.0,] optional     //how much participant1 must put aside to assure payment to participant2
 
   --> Company participant2                        //company who receives payment from variable interest rate 2
-  o InterestRate interestRate2                    //interest rate participant1 pays
+  o String interestRate2                          //interest rate participant1 pays
   o Boolean participant2Approved default = false  //whether or not participant2 has approved IRS
   o Double collateral2 range = [0.0,] optional    //how much participant2 must put aside to assure payment to participant1
 
@@ -95,10 +96,10 @@ transaction ProposeInterestRateSwap {
   o Double marketValue default = 0.0 optional
   
   --> Company participant1
-  o InterestRate interestRate1
+  o String interestRate1
   o Double collateral1 range = [0.0,] optional
   --> Company participant2
-  o InterestRate interestRate2
+  o String interestRate2
   o Double collateral2 range = [0.0,] optional
 
   o String documentHash optional
@@ -108,10 +109,13 @@ transaction ApproveInterestRateSwap {
   --> InterestRateSwap irs
 }
 
-transaction SettleInterestRateSwapPayment {
+transaction DenyInterestRateSwap {
+  --> InterestRateSwap irs
+}
+
+transaction SettleInterestRateSwap {
   --> InterestRateSwap irs
   o Integer paymentIndex
-  --> VariableIndexValue[] variableRates
 }
 
 transaction PostLIBORIndex {

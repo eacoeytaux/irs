@@ -1,6 +1,6 @@
 {
   "engines": {
-    "composer": "^0.11.0 || ^0.12.0"
+    "composer": "^0.13.0"
   },
   "name": "irs",
   "version": "0.1.8",
@@ -22,7 +22,8 @@
     "url": ""
   },
   "keywords": [
-	"irs", "interest rate swap"
+    "irs",
+    "interest rate swap"
   ],
   "author": "Hyperledger Composer",
   "license": "Apache-2.0",
@@ -75,5 +76,10 @@
     "branches": 100,
     "functions": 100,
     "lines": 100
+  },
+  "dependencies": {
+    "composer-rest-server": "^0.14.1",
+    "loopback-connector-mongodb": "^3.3.0",
+    "passport-github": "^1.1.0"
   }
 }
