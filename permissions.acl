@@ -2,27 +2,19 @@
  * Access control rules for IRS
  */
 
-// rule NetworkAdminUser {
-//     description: "Grant business network administrators full access to user resources"
-//     participant: "org.hyperledger.composer.system.**"
-//     operation: ALL
-//     resource: "fabric.hyperledger.**"
-//     action: ALLOW
-// }
-
-// rule NetworkAdminSystem {
-//     description: "Grant business network administrators full access to system resources"
-//     participant: "org.hyperledger.composer.system.**"
-//     operation: ALL
-//     resource: "org.hyperledger.composer.system.**"
-//     action: ALLOW
-// }
-
-rule ReadAccess {
-    description: "Allow all participants ability to access all resources"
-    participant: "ANY"
+rule NetworkAdminUser {
+    description: "Grant business network administrators full access to user resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
     operation: ALL
-    resource: "fabric.hyperledger.**"
+    resource: "**"
+    action: ALLOW
+}
+
+rule NetworkAdminSystem {
+    description: "Grant business network administrators full access to system resources"
+    participant: "org.hyperledger.composer.system.NetworkAdmin"
+    operation: ALL
+    resource: "org.hyperledger.composer.system.**"
     action: ALLOW
 }
 
@@ -34,38 +26,95 @@ rule SystemACL {
   action: ALLOW
 }
 
-// rule AccessToLIBOR {
-//   description:  "Only LIBORAuthority participants can post a LIBOR Index"
-//   participant: "ibm.irs.LIBORAuthority"
-//   operation: CREATE
-//   resource: "ibm.irs.LIBORIndexValue"
-//   transaction: "ibm.irs.PostLIBORIndex"
-//   action: ALLOW
-// }
+rule ReadAccess {
+    description: "Allow all participants ability to read all resources"
+    participant: "ANY"
+    operation: READ
+    resource: "fabric.hyperledger.**"
+    action: ALLOW
+}
 
-// rule CreateAccessToIRS {
-//   description:  "System ACL to permit all access"
-//   participant: "ibm.irs.Company"
-//   operation: CREATE
-//   resource: "ibm.irs.InterestRateSwap"
-//   transaction: "ibm.irs.ProposeInterestRateSwap"
-//   action: ALLOW
-// }
+rule CreatePostLIBORTX {
+  description:  "Only LIBORAuthority participants can post a LIBOR Index"
+  participant: "fabric.hyperledger.LIBORAuthority"
+  operation: CREATE
+  resource: "fabric.hyperledger.ProposeInterestRateSwap"
+  action: ALLOW
+}
 
-// rule UpdateAccessToIRS {
-//   description:  "System ACL to permit all access"
-//   participant: "ibm.irs.Company"
-//   operation: UPDATE
-//   resource: "ibm.irs.InterestRateSwap"
-//   transaction: "ibm.irs.ApproveInterestRateSwap"
-//   action: ALLOW
-// }
+rule CreateLIBOR {
+  description:  "Allows PostLIBORIndex to create a LIBORIndexValue"
+  participant: "fabric.hyperledger.LIBORAuthority"
+  operation: CREATE
+  resource: "fabric.hyperledger.LIBORIndexValue"
+  transaction: "fabric.hyperledger.PostLIBORIndex"
+  action: ALLOW
+}
 
-// rule UpdateAccessToIRS {
-//   description:  "System ACL to permit all access"
-//   participant: "ibm.irs.Company"
-//   operation: UPDATE
-//   resource: "ibm.irs.InterestRateSwap"
-//   transaction: "ibm.irs.ApproveInterestRateSwap"
-//   action: ALLOW
-// }
+rule CreateIRSTX {
+  description:  "Allows Companies to propose an IRS"
+  participant: "fabric.hyperledger.Company"
+  operation: CREATE
+  resource: "fabric.hyperledger.ProposeInterestRateSwap"
+  action: ALLOW
+}
+
+rule CreateIRS {
+  description:  "Allows CreateIRSTX to create an IRS"
+  participant: "fabric.hyperledger.Company"
+  operation: CREATE
+  resource: "fabric.hyperledger.InterestRateSwap"
+  transaction: "fabric.hyperledger.ProposeInterestRateSwap"
+  action: ALLOW
+}
+
+rule ApproveIRSTX {
+  description:  "Allows Companies to approve an IRS"
+  participant: "fabric.hyperledger.Company"
+  operation: CREATE
+  resource: "fabric.hyperledger.ProposeInterestRateSwap"
+  action: ALLOW
+}
+
+rule ApproveIRS {
+  description:  "Allows ApproveIRSTX to update an IRS"
+  participant: "fabric.hyperledger.Company"
+  operation: UPDATE
+  resource: "fabric.hyperledger.InterestRateSwap"
+  transaction: "fabric.hyperledger.ApproveInterestRateSwap"
+  action: ALLOW
+}
+
+rule DenyIRSTX {
+  description:  "Allows Companies to deny an IRS"
+  participant: "fabric.hyperledger.Company"
+  operation: CREATE
+  resource: "fabric.hyperledger.ProposeInterestRateSwap"
+  action: ALLOW
+}
+
+rule DenyIRS {
+  description:  "Allows DenyIRSTX to update an IRS"
+  participant: "fabric.hyperledger.Company"
+  operation: UPDATE
+  resource: "fabric.hyperledger.InterestRateSwap"
+  transaction: "fabric.hyperledger.ApproveInterestRateSwap"
+  action: ALLOW
+}
+
+rule SettleIRSTX {
+  description:  "Allows Companies to settle an IRS payment"
+  participant: "fabric.hyperledger.Company"
+  operation: CREATE
+  resource: "fabric.hyperledger.ProposeInterestRateSwap"
+  action: ALLOW
+}
+
+rule SettleIRS {
+  description:  "Allows SettleIRSTX to update an IRS"
+  participant: "fabric.hyperledger.Company"
+  operation: UPDATE
+  resource: "fabric.hyperledger.InterestRateSwap"
+  transaction: "fabric.hyperledger.SettleInterestRateSwap"
+  action: ALLOW
+}

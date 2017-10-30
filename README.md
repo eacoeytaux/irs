@@ -2,9 +2,33 @@
 
 This app demonstrates how companies can create and trade interest rate swaps using Hyperledger Fabric and automate payments based on floating interest rates.
 
-To run, run the command `npm install && composer network deploy -a dist/irs.bna -p hlfv1 -i PeerAdmin -s randomString -A admin -S && source rest_config.sh && composer-rest-server -p hlfv1 -n irs -i admin -s adminpw -N never -w true`
+To run using composer-rest-server, run the command `npm install && composer network deploy -a dist/irs.bna -p hlfv1 -i PeerAdmin -s randomString -A admin -S && source rest_config.sh && composer-rest-server -p hlfv1 -n irs -i admin -s adminpw -N never -w true`
 
 A UI for the chaincode can be found at www.github.com/eacoeytaux/irs-ui
+
+## Defintions
+
+**Participants**
+- Company
+- LIBORAuthority
+
+**Assets**
+- InterestRateSwap
+- LIBORIndexValue
+
+**Transactions (Company)**
+- ProposeInterestRateSwap
+⋅⋅⋅Creates an IRS with two participants (one of which must be the issuer) which must be approved by both participants to become valid
+- ApproveInterestRateSwap
+⋅⋅⋅Approves a proposed IRS of which the participant is involved with
+- DenyInterestRateSwap
+⋅⋅⋅Denies a proposed IRS of which the participant is involved with
+- SettleInterestRateSwap
+⋅⋅⋅Settles a payment of an approved IRS if a LIBOR Index has been posted for the given date
+
+**Transactions (LIBORAuthority)**
+- PostLIBORIndex
+⋅⋅⋅Posts a LIBOR Index for a given date
 
 ## The following provides an example of how an interest rate swap works:
 

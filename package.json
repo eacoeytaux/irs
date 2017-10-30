@@ -1,6 +1,6 @@
 {
   "engines": {
-    "composer": "^0.13.0"
+    "composer": "^0.14.2"
   },
   "name": "irs",
   "version": "0.1.8",
@@ -32,7 +32,7 @@
     "chai": "^3.5.0",
     "chai-as-promised": "^6.0.0",
     "composer-admin": "^0.11.0",
-    "composer-cli": "^0.11.0",
+    "composer-cli": "^0.14.2",
     "composer-client": "^0.11.0",
     "composer-connector-embedded": "^0.11.0",
     "composer-cucumber-steps": "^0.11.0",
@@ -79,7 +79,7 @@
   },
   "dependencies": {
     "composer": "^0.13.0",
-    "composer-rest-server": "^0.14.1",
+    "composer-rest-server": "^0.14.2",
     "loopback-connector-mongodb": "^3.3.0",
     "passport-github": "^1.1.0"
   }
