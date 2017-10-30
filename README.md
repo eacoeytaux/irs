@@ -26,5 +26,5 @@ The entire lifecycle of the trade will be executed with the following transactio
 - payment intervals are set to 3 months
 - maturity is set to 2 years
 - at this point the trade has been executed and the terms are in effect
-- at each net settlement, which is the end of the month 3, 6, 9, 12, 15, 18, 21, 24, LIBOR rate is taken (from a standard oracle service, but in our case we'll simply call the LIBOR API and pass the historical timestamp for the rate). note that we don't use an oracle service because the LIBOR API is deterministic, the same rate already returned for the same historical timestamp
-- once the settlement is performed at month 24, the chaincode is marked as "COMPLETED" and will not perform any further settlements
+- at each net settlement, which is the end of the month 3, 6, 9, 12, 15, 18, 21, 24, LIBOR rate is taken from posting made to the chaincode from a "LIBOR Authority," who is certified to post official LIBOR Index values
+- once the settlement is performed at month 24, the interest rate swap is marked as "COMPLETED" and will not perform any further settlements
