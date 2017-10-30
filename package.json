@@ -78,6 +78,7 @@
     "lines": 100
   },
   "dependencies": {
+    "composer": "^0.13.0",
     "composer-rest-server": "^0.14.1",
     "loopback-connector-mongodb": "^3.3.0",
     "passport-github": "^1.1.0"
