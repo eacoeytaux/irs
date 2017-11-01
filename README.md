@@ -2,8 +2,6 @@
 
 This app demonstrates how companies can create and trade interest rate swaps using Hyperledger Fabric and automate payments based on floating interest rates.
 
-To run using composer-rest-server, run the command `npm install && composer network deploy -a dist/irs.bna -p hlfv1 -i PeerAdmin -s randomString -A admin -S && source rest_config.sh && composer-rest-server -p hlfv1 -n irs -i admin -s adminpw -N never -w true`
-
 A UI for the chaincode can be found at www.github.com/eacoeytaux/irs-ui
 
 ## Defintions
@@ -29,6 +27,12 @@ A UI for the chaincode can be found at www.github.com/eacoeytaux/irs-ui
 **Transactions (LIBORAuthority)**
 - PostLIBORIndex
 ⋅⋅⋅Posts a LIBOR Index for a given date
+
+## Usage
+
+You will need both a github OAuth app to authenticate users, as well as a database to store user, wallet, and identity information (currently mlab is used in this example).  Once these have been created the neseccary information should be put in rest_config.sh and `source rest_config.sh` should be run in command line.
+
+To run using composer-rest-server, run the command `npm install && composer network deploy -a dist/irs.bna -p hlfv1 -i PeerAdmin -s randomString -A admin -S && source rest_config.sh && composer-rest-server -p hlfv1 -n irs -i admin -s adminpw -N never -w true`.  This will deploy the rest server without authentication enabled.  Once the participants and identities have been created, and the server should be shut down and restarted with `composer-rest-server -p hlfv1 -n irs -i admin -s adminpw -N never -w true` to turn on authentication.
 
 ## The following provides an example of how an interest rate swap works:
 
