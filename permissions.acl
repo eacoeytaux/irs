@@ -38,7 +38,7 @@ rule CreatePostLIBORTX {
   description:  "Only LIBORAuthority participants can post a LIBOR Index"
   participant: "fabric.hyperledger.LIBORAuthority"
   operation: CREATE
-  resource: "fabric.hyperledger.ProposeInterestRateSwap"
+  resource: "fabric.hyperledger.PostLIBORIndex"
   action: ALLOW
 }
 
@@ -72,7 +72,7 @@ rule ApproveIRSTX {
   description:  "Allows Companies to approve an IRS"
   participant: "fabric.hyperledger.Company"
   operation: CREATE
-  resource: "fabric.hyperledger.ProposeInterestRateSwap"
+  resource: "fabric.hyperledger.ApproveInterestRateSwap"
   action: ALLOW
 }
 
@@ -89,7 +89,7 @@ rule DenyIRSTX {
   description:  "Allows Companies to deny an IRS"
   participant: "fabric.hyperledger.Company"
   operation: CREATE
-  resource: "fabric.hyperledger.ProposeInterestRateSwap"
+  resource: "fabric.hyperledger.DenyInterestRateSwap"
   action: ALLOW
 }
 
@@ -98,7 +98,7 @@ rule DenyIRS {
   participant: "fabric.hyperledger.Company"
   operation: UPDATE
   resource: "fabric.hyperledger.InterestRateSwap"
-  transaction: "fabric.hyperledger.ApproveInterestRateSwap"
+  transaction: "fabric.hyperledger.DenyInterestRateSwap"
   action: ALLOW
 }
 
@@ -106,7 +106,7 @@ rule SettleIRSTX {
   description:  "Allows Companies to settle an IRS payment"
   participant: "fabric.hyperledger.Company"
   operation: CREATE
-  resource: "fabric.hyperledger.ProposeInterestRateSwap"
+  resource: "fabric.hyperledger.SettleInterestRateSwap"
   action: ALLOW
 }
 
