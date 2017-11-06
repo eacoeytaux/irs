@@ -118,3 +118,12 @@ rule SettleIRS {
   transaction: "fabric.hyperledger.SettleInterestRateSwap"
   action: ALLOW
 }
+
+rule SettleIRSCompany {
+  description:  "Allows SettleIRSTX to update an Company during a settlement"
+  participant: "fabric.hyperledger.Company"
+  operation: UPDATE
+  resource: "fabric.hyperledger.Company"
+  transaction: "fabric.hyperledger.SettleInterestRateSwap"
+  action: ALLOW
+}
